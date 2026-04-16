@@ -57,10 +57,10 @@ This project is a role based quiz application built with Java, Spring Boot, MySQ
 
 ### SOLID
 
-1. SRP:
+1. SRP(Single Responsibility Principle):
    Authentication, registration, student quiz flow, teacher quiz flow, statistics, and session access are split into focused services.
 
-2. DIP:
+2. DIP(Dependency Inversion Principle):
    Controllers depend on service interfaces such as `AuthService`, `StudentQuizService`, and `TeacherQuizService` instead of concrete classes.
 
 ### Creational Pattern
