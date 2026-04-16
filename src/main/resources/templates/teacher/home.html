@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <p class="eyebrow">Teacher Dashboard</p>
+        <h1 th:text="|Welcome, ${sessionUser.name}|"></h1>
+    </div>
+    <div class="action-group">
+        <a th:href="@{/teacher/quizzes/new}" class="primary-btn">Create Quiz</a>
+        <a th:href="@{/logout}" class="ghost-btn">Logout</a>
+    </div>
+</header>
+
+<main class="single-column">
+    <div th:if="${successMessage}" class="alert success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert error" th:text="${errorMessage}"></div>
+
+    <section class="section-head">
+        <h2>Assigned Quizzes</h2>
+        <p>Monitor submissions, check deadlines, and review class performance.</p>
+    </section>
+
+    <div class="table-shell" th:if="${!#lists.isEmpty(quizzes)}">
+        <table>
+            <thead>
+            <tr>
+                <th>Quiz</th>
+                <th>Section</th>
+                <th>Course</th>
+                <th>Start</th>
+                <th>Deadline</th>
+                <th>Submitted</th>
+                <th>Highest</th>
+                <th>Lowest</th>
+                <th>Average</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="quiz : ${quizzes}">
+                <td th:text="${quiz.title}"></td>
+                <td th:text="${quiz.sectionName}"></td>
+                <td th:text="${quiz.courseName}"></td>
+                <td th:text="${#temporals.format(quiz.availableFrom, 'dd MMM yyyy HH:mm')}"></td>
+                <td th:text="${#temporals.format(quiz.deadline, 'dd MMM yyyy HH:mm')}"></td>
+                <td th:text="${quiz.submissionCount}"></td>
+                <td th:text="${quiz.highestScore}"></td>
+                <td th:text="${quiz.lowestScore}"></td>
+                <td th:text="${#numbers.formatDecimal(quiz.averageScore, 1, 2)}"></td>
+                <td><a th:href="@{|/teacher/quizzes/${quiz.quizId}/results|}" class="text-link">View Results</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <section class="empty-state" th:if="${#lists.isEmpty(quizzes)}">
+        <h3>No quizzes assigned yet.</h3>
+        <p>Create your first quiz to start collecting automatic scores.</p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,44 @@
+@startuml
+title Teacher Quiz Creation - Sequence Diagram
+autonumber
+
+actor Teacher
+participant TeacherController
+participant SessionService
+participant TeacherQuizServiceImpl as TeacherQuizService
+participant TeacherRepository
+participant AcademicCatalogService
+participant QuizRepository
+
+Teacher -> TeacherController: GET /teacher/quizzes/new
+TeacherController -> SessionService: requireRole(session, TEACHER)
+SessionService --> TeacherController: SessionUser
+TeacherController -> TeacherQuizService: buildEmptyQuizForm()
+TeacherQuizService --> TeacherController: QuizCreationRequest
+TeacherController -> TeacherQuizService: getTeacherSections(teacherId)
+TeacherQuizService -> TeacherRepository: findById(teacherId)
+TeacherRepository --> TeacherQuizService: Teacher
+TeacherQuizService --> TeacherController: List<Section>
+TeacherController -> TeacherQuizService: getTeacherCourses(teacherId)
+TeacherQuizService -> TeacherRepository: findById(teacherId)
+TeacherRepository --> TeacherQuizService: Teacher
+TeacherQuizService --> TeacherController: List<Course>
+TeacherController --> Teacher: Render quiz builder
+
+Teacher -> TeacherController: POST /teacher/quizzes/new
+TeacherController -> SessionService: requireRole(session, TEACHER)
+SessionService --> TeacherController: SessionUser
+TeacherController -> TeacherQuizService: createQuiz(teacherId, quizForm)
+TeacherQuizService -> TeacherRepository: findById(teacherId)
+TeacherRepository --> TeacherQuizService: Teacher
+TeacherQuizService -> TeacherQuizService: validateQuizRequest(request, teacher)
+TeacherQuizService -> AcademicCatalogService: getSection(sectionId)
+AcademicCatalogService --> TeacherQuizService: Section
+TeacherQuizService -> AcademicCatalogService: getCourse(courseId)
+AcademicCatalogService --> TeacherQuizService: Course
+TeacherQuizService -> TeacherQuizService: build Quiz, Questions, AnswerOptions
+TeacherQuizService -> QuizRepository: save(quiz)
+QuizRepository --> TeacherQuizService: Quiz
+TeacherQuizService --> TeacherController: success
+TeacherController --> Teacher: Redirect to teacher dashboard
+@enduml

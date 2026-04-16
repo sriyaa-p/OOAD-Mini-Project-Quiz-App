@@ -1,0 +1,408 @@
+:root {
+    --bg: #f4efe6;
+    --bg-strong: #efe6d7;
+    --surface: #fffdf8;
+    --surface-alt: #f8f2e7;
+    --line: #d8ccb9;
+    --text: #1f2530;
+    --muted: #636f7a;
+    --accent: #0f766e;
+    --accent-strong: #0b5f59;
+    --danger: #b42318;
+    --danger-soft: #fdecec;
+    --success: #047857;
+    --success-soft: #e8f8f0;
+    --shadow: 0 16px 42px rgba(31, 37, 48, 0.08);
+    --radius: 20px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.15), transparent 28%),
+        linear-gradient(180deg, #f9f4ec 0%, #f1e7d8 100%);
+    min-height: 100vh;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.auth-shell,
+.page-grid,
+.single-column {
+    width: min(1180px, 100%);
+}
+
+.auth-shell {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 28px;
+}
+
+.hero-panel,
+.card,
+.history-card,
+.form-card,
+.quiz-card,
+.stat-card,
+.result-card,
+.table-shell,
+.empty-state {
+    background: rgba(255, 253, 248, 0.92);
+    border: 1px solid rgba(216, 204, 185, 0.8);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.hero-panel {
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero-panel h1,
+.topbar h1,
+.result-card h1 {
+    margin: 0 0 14px;
+    font-size: clamp(2rem, 4vw, 3.3rem);
+    line-height: 1.05;
+}
+
+.hero-copy,
+.section-head p,
+.history-card p,
+.quiz-card p,
+.topbar p,
+.result-card p {
+    color: var(--muted);
+}
+
+.auth-panel {
+    display: grid;
+    gap: 20px;
+}
+
+.card,
+.form-card,
+.result-card {
+    padding: 28px;
+}
+
+.card-head,
+.section-head,
+.topbar,
+.quiz-card-head,
+.action-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.stack-form {
+    display: grid;
+    gap: 16px;
+}
+
+label {
+    display: grid;
+    gap: 8px;
+    font-weight: 600;
+}
+
+input,
+select,
+textarea,
+button {
+    font: inherit;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.primary-btn,
+.ghost-btn,
+.muted-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+}
+
+.primary-btn {
+    background: var(--accent);
+    color: #fff;
+}
+
+.primary-btn:hover,
+.ghost-btn:hover {
+    transform: translateY(-1px);
+}
+
+.ghost-btn {
+    border: 1px solid var(--line);
+    background: var(--surface);
+}
+
+.muted-btn {
+    background: var(--bg-strong);
+    color: var(--muted);
+    cursor: not-allowed;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.alert {
+    padding: 14px 16px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+}
+
+.alert.success {
+    background: var(--success-soft);
+    color: var(--success);
+}
+
+.alert.error {
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+.page-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr;
+    gap: 24px;
+    padding: 24px;
+}
+
+.single-column {
+    display: grid;
+    gap: 24px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.topbar {
+    padding: 24px;
+}
+
+.quiz-grid,
+.history-list,
+.stats-grid {
+    display: grid;
+    gap: 18px;
+}
+
+.quiz-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.quiz-card,
+.history-card,
+.stat-card,
+.empty-state {
+    padding: 22px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.badge.available {
+    background: #d7f6ee;
+    color: #0f766e;
+}
+
+.badge.pending {
+    background: #fff0cc;
+    color: #946200;
+}
+
+.badge.attempted {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge.missed {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.history-panel {
+    display: grid;
+    align-content: start;
+    gap: 18px;
+}
+
+.question-block,
+.question-builder {
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--surface-alt);
+}
+
+.option-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--surface);
+    font-weight: 500;
+}
+
+.option-row input {
+    width: auto;
+    margin: 0;
+}
+
+.result-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.result-card {
+    width: min(520px, 100%);
+    text-align: center;
+}
+
+.result-score {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent-strong);
+}
+
+.table-shell {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+}
+
+th {
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.text-link {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.stat-card h2 {
+    margin: 8px 0 0;
+    font-size: 2rem;
+}
+
+.two-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.full-span {
+    grid-column: 1 / -1;
+}
+
+.inline-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@media (max-width: 900px) {
+    .auth-shell,
+    .page-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .two-column,
+    .card-head,
+    .section-head,
+    .topbar,
+    .action-group {
+        grid-template-columns: 1fr;
+        display: grid;
+    }
+
+    .topbar,
+    .single-column,
+    .page-grid {
+        padding: 18px;
+    }
+}

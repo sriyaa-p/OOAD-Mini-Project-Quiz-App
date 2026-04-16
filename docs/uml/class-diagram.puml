@@ -1,0 +1,226 @@
+@startuml
+title Quiz Application - Class Diagram
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+package "controller" {
+  class AuthController
+  class StudentController
+  class TeacherController
+}
+
+package "service" {
+  interface RegistrationService
+  class RegistrationServiceImpl
+  interface AcademicCatalogService
+  class AcademicCatalogServiceImpl
+  interface StudentQuizService
+  class StudentQuizServiceImpl
+  interface TeacherQuizService
+  class TeacherQuizServiceImpl
+  interface QuizStatisticsService
+  class QuizStatisticsServiceImpl
+}
+
+package "service.auth" {
+  interface AuthService
+  class AuthServiceImpl
+  interface SessionService
+  class SessionServiceImpl
+  class SessionUser
+}
+
+package "patterns.factory" {
+  interface UserRegistrationFactory
+  class UserRegistrationFactoryImpl
+}
+
+package "patterns.strategy" {
+  interface QuizScoringStrategy
+  class McqQuizScoringStrategy
+  class ScoringResult
+  class QuestionEvaluation
+}
+
+package "repository" {
+  interface AppUserRepository
+  interface StudentRepository
+  interface TeacherRepository
+  interface SectionRepository
+  interface CourseRepository
+  interface QuizRepository
+  interface QuizAttemptRepository
+  interface AnswerOptionRepository
+}
+
+package "domain" {
+  abstract class AppUser {
+    id
+    userCode
+    name
+    email
+    passwordHash
+    role
+  }
+
+  class Student
+  class Teacher
+  class Section
+  class Course
+  class Quiz {
+    title
+    description
+    availableFrom
+    deadline
+  }
+  class Question {
+    questionText
+    displayOrder
+  }
+  class AnswerOption {
+    optionLabel
+    optionText
+    correct
+  }
+  class QuizAttempt {
+    submittedAt
+    score
+    totalQuestions
+  }
+  class AttemptAnswer {
+    correct
+  }
+  enum UserRole
+  enum QuizStatus
+}
+
+package "dto" {
+  class LoginRequest
+  class StudentRegistrationRequest
+  class TeacherRegistrationRequest
+  class QuizCreationRequest
+  class QuizQuestionForm
+  class QuizSubmissionRequest
+  class QuizSubmissionResultView
+  class QuizAttemptView
+  class QuizCardView
+  class QuizQuestionView
+  class QuizOptionView
+  class StudentAttemptHistoryView
+  class TeacherQuizSummaryView
+  class TeacherStudentResultView
+  class QuizStatisticsView
+}
+
+AppUser <|-- Student
+AppUser <|-- Teacher
+AppUser --> UserRole
+QuizCardView --> QuizStatus
+
+Student "1" --> "1" Section
+Student "1" --> "1" Course
+Teacher "1" -- "*" Section
+Teacher "1" -- "*" Course
+
+Quiz "*" --> "1" Teacher
+Quiz "*" --> "1" Section
+Quiz "*" --> "1" Course
+Quiz "1" *-- "*" Question
+Question "1" *-- "*" AnswerOption
+QuizAttempt "*" --> "1" Quiz
+QuizAttempt "*" --> "1" Student
+QuizAttempt "1" *-- "*" AttemptAnswer
+AttemptAnswer "*" --> "1" Question
+AttemptAnswer "*" --> "0..1" AnswerOption
+
+AuthController --> AuthService
+AuthController --> RegistrationService
+AuthController --> SessionService
+AuthController ..> LoginRequest
+AuthController ..> StudentRegistrationRequest
+AuthController ..> TeacherRegistrationRequest
+
+StudentController --> StudentQuizService
+StudentController --> SessionService
+StudentController ..> QuizSubmissionRequest
+StudentController ..> QuizSubmissionResultView
+
+TeacherController --> TeacherQuizService
+TeacherController --> SessionService
+TeacherController ..> QuizCreationRequest
+
+RegistrationServiceImpl ..|> RegistrationService
+AcademicCatalogServiceImpl ..|> AcademicCatalogService
+StudentQuizServiceImpl ..|> StudentQuizService
+TeacherQuizServiceImpl ..|> TeacherQuizService
+QuizStatisticsServiceImpl ..|> QuizStatisticsService
+AuthServiceImpl ..|> AuthService
+SessionServiceImpl ..|> SessionService
+UserRegistrationFactoryImpl ..|> UserRegistrationFactory
+McqQuizScoringStrategy ..|> QuizScoringStrategy
+
+RegistrationServiceImpl --> AppUserRepository
+RegistrationServiceImpl --> StudentRepository
+RegistrationServiceImpl --> TeacherRepository
+RegistrationServiceImpl --> AcademicCatalogService
+RegistrationServiceImpl --> UserRegistrationFactory
+
+AuthServiceImpl --> AppUserRepository
+AuthServiceImpl --> SessionUser
+
+StudentQuizServiceImpl --> StudentRepository
+StudentQuizServiceImpl --> QuizRepository
+StudentQuizServiceImpl --> QuizAttemptRepository
+StudentQuizServiceImpl --> QuizScoringStrategy
+StudentQuizServiceImpl ..> QuizAttemptView
+StudentQuizServiceImpl ..> QuizCardView
+StudentQuizServiceImpl ..> StudentAttemptHistoryView
+StudentQuizServiceImpl ..> QuizSubmissionResultView
+
+TeacherQuizServiceImpl --> TeacherRepository
+TeacherQuizServiceImpl --> QuizRepository
+TeacherQuizServiceImpl --> QuizAttemptRepository
+TeacherQuizServiceImpl --> AcademicCatalogService
+TeacherQuizServiceImpl --> QuizStatisticsService
+TeacherQuizServiceImpl ..> QuizCreationRequest
+TeacherQuizServiceImpl ..> TeacherQuizSummaryView
+TeacherQuizServiceImpl ..> TeacherStudentResultView
+TeacherQuizServiceImpl ..> QuizStatisticsView
+
+AcademicCatalogServiceImpl --> SectionRepository
+AcademicCatalogServiceImpl --> CourseRepository
+QuizStatisticsServiceImpl --> QuizAttempt
+
+QuizRepository --> Quiz
+QuizAttemptRepository --> QuizAttempt
+StudentRepository --> Student
+TeacherRepository --> Teacher
+AppUserRepository --> AppUser
+SectionRepository --> Section
+CourseRepository --> Course
+AnswerOptionRepository --> AnswerOption
+
+UserRegistrationFactoryImpl --> Student
+UserRegistrationFactoryImpl --> Teacher
+UserRegistrationFactoryImpl --> StudentRegistrationRequest
+UserRegistrationFactoryImpl --> TeacherRegistrationRequest
+
+McqQuizScoringStrategy --> Quiz
+McqQuizScoringStrategy --> ScoringResult
+ScoringResult "1" o-- "*" QuestionEvaluation
+QuestionEvaluation --> Question
+QuestionEvaluation --> AnswerOption
+
+note right of UserRegistrationFactory
+Creational pattern:
+Factory Method creates
+Student and Teacher entities
+end note
+
+note right of QuizScoringStrategy
+Behavioral pattern:
+Strategy encapsulates
+MCQ scoring logic
+end note
+
+@enduml

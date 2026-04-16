@@ -1,0 +1,54 @@
+@startuml
+title Student Quiz Attempt - Sequence Diagram
+autonumber
+
+actor Student
+participant StudentController
+participant SessionService
+participant StudentQuizServiceImpl as StudentQuizService
+participant StudentRepository
+participant QuizRepository
+participant QuizAttemptRepository
+participant QuizScoringStrategy as ScoringStrategy
+
+Student -> StudentController: GET /student/home
+StudentController -> SessionService: requireRole(session, STUDENT)
+SessionService --> StudentController: SessionUser
+StudentController -> StudentQuizService: getAvailableQuizzes(studentId)
+StudentQuizService -> StudentRepository: findById(studentId)
+StudentRepository --> StudentQuizService: Student
+StudentQuizService -> QuizRepository: findBySectionAndCourseOrderByAvailableFromDesc(section, course)
+QuizRepository --> StudentQuizService: List<Quiz>
+loop for each quiz
+  StudentQuizService -> QuizAttemptRepository: findByQuizAndStudent(quiz, student)
+  QuizAttemptRepository --> StudentQuizService: Optional<QuizAttempt>
+  StudentQuizService -> QuizAttemptRepository: existsByQuizAndStudent(quiz, student)
+  QuizAttemptRepository --> StudentQuizService: boolean
+end
+StudentQuizService --> StudentController: List<QuizCardView>
+StudentController --> Student: Render dashboard
+
+Student -> StudentController: GET /student/quiz/{quizId}
+StudentController -> SessionService: requireRole(session, STUDENT)
+SessionService --> StudentController: SessionUser
+StudentController -> StudentQuizService: getQuizForAttempt(studentId, quizId)
+StudentQuizService -> StudentRepository: findById(studentId)
+StudentQuizService -> QuizRepository: findById(quizId)
+StudentQuizService -> QuizAttemptRepository: existsByQuizAndStudent(quiz, student)
+StudentQuizService --> StudentController: QuizAttemptView
+StudentController --> Student: Render attempt page
+
+Student -> StudentController: POST /student/quiz/{quizId}/submit
+StudentController -> SessionService: requireRole(session, STUDENT)
+SessionService --> StudentController: SessionUser
+StudentController -> StudentQuizService: submitQuiz(studentId, quizId, answers)
+StudentQuizService -> StudentRepository: findById(studentId)
+StudentQuizService -> QuizRepository: findById(quizId)
+StudentQuizService -> QuizAttemptRepository: existsByQuizAndStudent(quiz, student)
+StudentQuizService -> ScoringStrategy: score(quiz, selectedOptions)
+ScoringStrategy --> StudentQuizService: ScoringResult
+StudentQuizService -> QuizAttemptRepository: save(quizAttempt)
+QuizAttemptRepository --> StudentQuizService: QuizAttempt
+StudentQuizService --> StudentController: QuizSubmissionResultView
+StudentController --> Student: Show immediate score
+@enduml

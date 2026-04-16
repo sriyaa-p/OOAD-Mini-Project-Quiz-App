@@ -1,0 +1,42 @@
+@startuml
+title Quiz Lifecycle - State Diagram
+
+[*] --> Pending : quiz created\nnow < availableFrom
+
+Pending --> Available : current time reaches start
+Pending --> Missed : deadline passes before attempt
+
+Available --> Attempted : student submits quiz
+Available --> Missed : current time > deadline
+
+Attempted --> [*]
+Missed --> [*]
+
+state Pending {
+  note right
+  Quiz visible to matching
+  section/course student
+  but cannot be attempted yet
+  end note
+}
+
+state Available {
+  note right
+  Student can open and submit
+  quiz before deadline
+  end note
+}
+
+state Attempted {
+  note right
+  Further attempts are blocked
+  and score is shown in history
+  end note
+}
+
+state Missed {
+  note right
+  Deadline expired with no attempt
+  end note
+}
+@enduml

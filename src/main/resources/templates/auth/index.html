@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Portal</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+    <section class="hero-panel">
+        <p class="eyebrow">Quiz Application</p>
+        <h1>Role-based quiz platform for teachers and students.</h1>
+        <p class="hero-copy">
+            Teachers create MCQ quizzes for their own sections and courses. Students attempt quizzes, get scores
+            immediately, and track their past performance from one dashboard.
+        </p>
+    </section>
+
+    <section class="auth-panel">
+        <div th:if="${successMessage}" class="alert success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert error" th:text="${errorMessage}"></div>
+
+        <div class="card">
+            <h2>Login</h2>
+            <form th:action="@{/login}" th:object="${loginRequest}" method="post" class="stack-form">
+                <label>
+                    Role
+                    <select th:field="*{role}">
+                        <option value="">Select role</option>
+                        <option th:each="role : ${roles}" th:value="${role}" th:text="${role}"></option>
+                    </select>
+                </label>
+                <label>
+                    Email
+                    <input type="email" th:field="*{email}" placeholder="name@example.com">
+                </label>
+                <label>
+                    Password
+                    <input type="password" th:field="*{password}" placeholder="Enter your password">
+                </label>
+                <button type="submit" class="primary-btn">Login</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <h2>Register</h2>
+                <label class="inline-control">
+                    Role
+                    <select id="registerRole">
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                    </select>
+                </label>
+            </div>
+
+            <form id="studentRegisterForm" th:action="@{/register/student}" th:object="${studentRegistrationRequest}" method="post" class="stack-form register-form">
+                <label>
+                    Student ID
+                    <input type="text" th:field="*{userCode}" placeholder="STU101">
+                </label>
+                <label>
+                    Name
+                    <input type="text" th:field="*{name}" placeholder="Student name">
+                </label>
+                <label>
+                    Email
+                    <input type="email" th:field="*{email}" placeholder="student@example.com">
+                </label>
+                <label>
+                    Password
+                    <input type="password" th:field="*{password}" placeholder="Create a password">
+                </label>
+                <label>
+                    Section
+                    <input type="text" th:field="*{sectionName}" placeholder="Section A">
+                </label>
+                <label>
+                    Course
+                    <input type="text" th:field="*{courseName}" placeholder="Java Programming">
+                </label>
+                <button type="submit" class="primary-btn">Register Student</button>
+            </form>
+
+            <form id="teacherRegisterForm" th:action="@{/register/teacher}" th:object="${teacherRegistrationRequest}" method="post" class="stack-form register-form hidden">
+                <label>
+                    Teacher ID
+                    <input type="text" th:field="*{userCode}" placeholder="TEA201">
+                </label>
+                <label>
+                    Name
+                    <input type="text" th:field="*{name}" placeholder="Teacher name">
+                </label>
+                <label>
+                    Email
+                    <input type="email" th:field="*{email}" placeholder="teacher@example.com">
+                </label>
+                <label>
+                    Password
+                    <input type="password" th:field="*{password}" placeholder="Create a password">
+                </label>
+                <label>
+                    Classes / Sections
+                    <input type="text" th:field="*{sectionsInput}" placeholder="Section A, Section B">
+                </label>
+                <label>
+                    Courses
+                    <input type="text" th:field="*{coursesInput}" placeholder="Java Programming, Web Technology">
+                </label>
+                <button type="submit" class="primary-btn">Register Teacher</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<script>
+    const roleSwitcher = document.getElementById('registerRole');
+    const studentForm = document.getElementById('studentRegisterForm');
+    const teacherForm = document.getElementById('teacherRegisterForm');
+
+    function syncRegisterForms() {
+        const isTeacher = roleSwitcher.value === 'teacher';
+        studentForm.classList.toggle('hidden', isTeacher);
+        teacherForm.classList.toggle('hidden', !isTeacher);
+    }
+
+    roleSwitcher.addEventListener('change', syncRegisterForms);
+    syncRegisterForms();
+</script>
+</body>
+</html>

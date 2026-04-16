@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <p class="eyebrow">Submission Report</p>
+        <h1>Quiz Results</h1>
+    </div>
+    <a th:href="@{/teacher/home}" class="ghost-btn">Back</a>
+</header>
+
+<main class="single-column">
+    <section class="stats-grid">
+        <article class="stat-card">
+            <p>Submitted</p>
+            <h2 th:text="${statistics.submissionCount}"></h2>
+        </article>
+        <article class="stat-card">
+            <p>Highest</p>
+            <h2 th:text="${statistics.highestScore}"></h2>
+        </article>
+        <article class="stat-card">
+            <p>Lowest</p>
+            <h2 th:text="${statistics.lowestScore}"></h2>
+        </article>
+        <article class="stat-card">
+            <p>Average</p>
+            <h2 th:text="${#numbers.formatDecimal(statistics.averageScore, 1, 2)}"></h2>
+        </article>
+    </section>
+
+    <div class="table-shell" th:if="${!#lists.isEmpty(results)}">
+        <table>
+            <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Total</th>
+                <th>Submitted At</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="result : ${results}">
+                <td th:text="${result.studentCode}"></td>
+                <td th:text="${result.studentName}"></td>
+                <td th:text="${result.score}"></td>
+                <td th:text="${result.totalQuestions}"></td>
+                <td th:text="${#temporals.format(result.submittedAt, 'dd MMM yyyy HH:mm')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <section class="empty-state" th:if="${#lists.isEmpty(results)}">
+        <h3>No student submissions yet.</h3>
+        <p>Results will appear here once students start attempting the quiz.</p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,41 @@
+@startuml
+title Teacher Quiz Management - Activity Diagram
+
+start
+:Open login page;
+:Select role = TEACHER;
+:Enter email and password;
+
+if (Credentials valid?) then (yes)
+  :Create session;
+  :Open teacher dashboard;
+  :Choose "Create Quiz";
+  :Load teacher's sections and courses;
+  :Enter title, description,\nstart time, deadline;
+  :Select section and course;
+  :Enter questions,\n4 options, correct answer;
+
+  if (Section/course owned by teacher?) then (yes)
+    if (Deadline after start time?) then (yes)
+      if (At least one question?) then (yes)
+        :Create Quiz aggregate;
+        :Create Question and AnswerOption objects;
+        :Save quiz assignment;
+        :Return to dashboard;
+        :View submissions after students respond;
+        :Calculate highest, lowest,\nand average score;
+      else (no)
+        :Show "Add at least one question";
+      endif
+    else (no)
+      :Show deadline validation error;
+    endif
+  else (no)
+    :Show unauthorized section/course error;
+  endif
+else (no)
+  :Show login error;
+endif
+
+stop
+@enduml

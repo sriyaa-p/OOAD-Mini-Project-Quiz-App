@@ -1,0 +1,43 @@
+@startuml
+title Quiz Application - Deployment Diagram
+skinparam componentStyle rectangle
+
+node "Student Device" as student_device {
+  artifact "Web Browser\n(Student UI)" as student_browser
+}
+
+node "Teacher Device" as teacher_device {
+  artifact "Web Browser\n(Teacher UI)" as teacher_browser
+}
+
+node "Application Host" as app_host {
+  node "Spring Boot Runtime" as spring_runtime {
+    artifact "QuizAppApplication" as app_artifact
+    component "Controllers\nAuthController\nStudentController\nTeacherController" as controllers
+    component "Services\nAuth / Registration /\nStudentQuiz / TeacherQuiz /\nStatistics / Session" as services
+    component "Thymeleaf Templates\nHTML + CSS" as views
+    component "Spring Data JPA /\nHibernate ORM" as persistence
+  }
+}
+
+database "Primary DB\nMySQL (mysql profile)" as mysql_db
+database "Local Dev/Test DB\nH2 In-Memory" as h2_db
+
+student_browser --> views : HTTP
+teacher_browser --> views : HTTP
+views --> controllers : form submit / page request
+controllers --> services : business calls
+services --> persistence : repository operations
+persistence --> mysql_db : JDBC
+persistence --> h2_db : JDBC
+
+note right of mysql_db
+Used when app runs with:
+spring profile = mysql
+end note
+
+note right of h2_db
+Used by default local startup
+and automated tests
+end note
+@enduml

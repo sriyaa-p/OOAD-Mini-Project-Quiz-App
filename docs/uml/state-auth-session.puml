@@ -1,0 +1,35 @@
+@startuml
+title Authentication Session - State Diagram
+
+[*] --> Guest
+
+Guest --> RegisteringStudent : choose student registration
+Guest --> RegisteringTeacher : choose teacher registration
+Guest --> Authenticating : submit login form
+
+RegisteringStudent --> Guest : registration successful
+RegisteringTeacher --> Guest : registration successful
+RegisteringStudent --> Guest : validation error
+RegisteringTeacher --> Guest : validation error
+
+Authenticating --> StudentSession : valid student login
+Authenticating --> TeacherSession : valid teacher login
+Authenticating --> Guest : invalid credentials or role mismatch
+
+StudentSession --> Guest : logout / session invalidated
+TeacherSession --> Guest : logout / session invalidated
+
+state StudentSession {
+  [*] --> StudentDashboard
+  StudentDashboard --> QuizAttemptPage : open available quiz
+  QuizAttemptPage --> StudentDashboard : submit or cancel
+}
+
+state TeacherSession {
+  [*] --> TeacherDashboard
+  TeacherDashboard --> QuizBuilder : create quiz
+  QuizBuilder --> TeacherDashboard : save or cancel
+  TeacherDashboard --> ResultsView : open quiz results
+  ResultsView --> TeacherDashboard : back
+}
+@enduml

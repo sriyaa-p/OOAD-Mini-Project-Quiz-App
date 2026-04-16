@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempt Quiz</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <p class="eyebrow">Quiz Attempt</p>
+        <h1 th:text="${quiz.title}"></h1>
+        <p th:text="|Deadline: ${#temporals.format(quiz.deadline, 'dd MMM yyyy HH:mm')}|"></p>
+    </div>
+    <a th:href="@{/student/home}" class="ghost-btn">Back</a>
+</header>
+
+<main class="single-column">
+    <section class="form-card">
+        <p th:if="${quiz.description}" th:text="${quiz.description}"></p>
+
+        <form th:action="@{|/student/quiz/${quiz.quizId}/submit|}" th:object="${submissionRequest}" method="post" class="stack-form">
+            <article class="question-block" th:each="question, state : ${quiz.questions}">
+                <h3 th:text="|${state.count}. ${question.questionText}|"></h3>
+
+                <label class="option-row" th:each="option : ${question.options}">
+                    <input type="radio"
+                           th:name="|selectedOptions[${question.questionId}]|"
+                           th:value="${option.optionId}"
+                           required>
+                    <span th:text="|${option.label}. ${option.text}|"></span>
+                </label>
+            </article>
+
+            <button type="submit" class="primary-btn">Submit Quiz</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

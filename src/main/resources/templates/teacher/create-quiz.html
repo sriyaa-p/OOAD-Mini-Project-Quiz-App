@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <p class="eyebrow">Teacher Tools</p>
+        <h1>Create And Assign Quiz</h1>
+    </div>
+    <a th:href="@{/teacher/home}" class="ghost-btn">Back</a>
+</header>
+
+<main class="single-column">
+    <div th:if="${errorMessage}" class="alert error" th:text="${errorMessage}"></div>
+
+    <section class="form-card">
+        <form th:action="@{/teacher/quizzes/new}" th:object="${quizForm}" method="post" class="stack-form" id="quizBuilder">
+            <div class="two-column">
+                <label>
+                    Quiz Title
+                    <input type="text" th:field="*{title}" placeholder="Week 1 Java MCQ">
+                </label>
+                <label>
+                    Section
+                    <select th:field="*{sectionId}">
+                        <option value="">Choose section</option>
+                        <option th:each="section : ${sections}" th:value="${section.id}" th:text="${section.name}"></option>
+                    </select>
+                </label>
+                <label>
+                    Course
+                    <select th:field="*{courseId}">
+                        <option value="">Choose course</option>
+                        <option th:each="course : ${courses}" th:value="${course.id}" th:text="${course.name}"></option>
+                    </select>
+                </label>
+                <label>
+                    Available From
+                    <input type="datetime-local" th:field="*{availableFrom}">
+                </label>
+                <label>
+                    Deadline
+                    <input type="datetime-local" th:field="*{deadline}">
+                </label>
+                <label class="full-span">
+                    Description
+                    <textarea th:field="*{description}" rows="3" placeholder="Short instruction for students"></textarea>
+                </label>
+            </div>
+
+            <div class="section-head">
+                <h2>Questions</h2>
+                <button type="button" class="ghost-btn" id="addQuestionBtn">Add Question</button>
+            </div>
+
+            <div id="questionsContainer">
+                <article class="question-builder" th:each="question, state : *{questions}">
+                    <h3 th:text="|Question ${state.count}|"></h3>
+                    <label>
+                        Question Text
+                        <input type="text" th:field="*{questions[__${state.index}__].questionText}" placeholder="Enter the question">
+                    </label>
+                    <div class="two-column">
+                        <label>
+                            Option A
+                            <input type="text" th:field="*{questions[__${state.index}__].optionA}">
+                        </label>
+                        <label>
+                            Option B
+                            <input type="text" th:field="*{questions[__${state.index}__].optionB}">
+                        </label>
+                        <label>
+                            Option C
+                            <input type="text" th:field="*{questions[__${state.index}__].optionC}">
+                        </label>
+                        <label>
+                            Option D
+                            <input type="text" th:field="*{questions[__${state.index}__].optionD}">
+                        </label>
+                    </div>
+                    <label>
+                        Correct Answer
+                        <select th:field="*{questions[__${state.index}__].correctOptionLabel}">
+                            <option value="">Choose correct option</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </label>
+                </article>
+            </div>
+
+            <button type="submit" class="primary-btn">Assign Quiz</button>
+        </form>
+    </section>
+</main>
+
+<script th:inline="javascript">
+    const questionsContainer = document.getElementById('questionsContainer');
+    const addQuestionBtn = document.getElementById('addQuestionBtn');
+    let questionIndex = /*[[${#lists.size(quizForm.questions)}]]*/ 1;
+
+    function renderQuestionBlock(index) {
+        const block = document.createElement('article');
+        block.className = 'question-builder';
+        block.innerHTML = `
+            <h3>Question ${index + 1}</h3>
+            <label>
+                Question Text
+                <input type="text" name="questions[${index}].questionText" placeholder="Enter the question">
+            </label>
+            <div class="two-column">
+                <label>
+                    Option A
+                    <input type="text" name="questions[${index}].optionA">
+                </label>
+                <label>
+                    Option B
+                    <input type="text" name="questions[${index}].optionB">
+                </label>
+                <label>
+                    Option C
+                    <input type="text" name="questions[${index}].optionC">
+                </label>
+                <label>
+                    Option D
+                    <input type="text" name="questions[${index}].optionD">
+                </label>
+            </div>
+            <label>
+                Correct Answer
+                <select name="questions[${index}].correctOptionLabel">
+                    <option value="">Choose correct option</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </label>
+        `;
+        questionsContainer.appendChild(block);
+    }
+
+    addQuestionBtn.addEventListener('click', () => {
+        renderQuestionBlock(questionIndex);
+        questionIndex += 1;
+    });
+</script>
+</body>
+</html>

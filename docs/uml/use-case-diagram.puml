@@ -1,0 +1,56 @@
+@startuml
+title Quiz Application - Use Case Diagram
+left to right direction
+skinparam packageStyle rectangle
+
+actor User
+actor Student
+actor Teacher
+
+User <|-- Student
+User <|-- Teacher
+
+rectangle "Quiz Application" {
+  usecase "Register Student" as UC1
+  usecase "Register Teacher" as UC2
+  usecase "Login With Role" as UC3
+  usecase "Logout" as UC4
+
+  usecase "View Student Dashboard" as UC5
+  usecase "View Quiz Status\n(Pending / Available /\nAttempted / Missed)" as UC6
+  usecase "Attempt MCQ Quiz" as UC7
+  usecase "Get Immediate Score" as UC8
+  usecase "View Attempt History" as UC9
+
+  usecase "View Teacher Dashboard" as UC10
+  usecase "Create Quiz" as UC11
+  usecase "Add Questions,\n4 Options, Correct Answer" as UC12
+  usecase "Assign Quiz To\nSection And Course" as UC13
+  usecase "View Student Submissions" as UC14
+  usecase "View Highest, Lowest,\nAverage Marks" as UC15
+}
+
+Student --> UC1
+Student --> UC3
+Student --> UC4
+Student --> UC5
+Student --> UC6
+Student --> UC7
+Student --> UC9
+
+Teacher --> UC2
+Teacher --> UC3
+Teacher --> UC4
+Teacher --> UC10
+Teacher --> UC11
+Teacher --> UC14
+Teacher --> UC15
+
+UC5 .> UC6 : <<include>>
+UC7 .> UC8 : <<include>>
+UC11 .> UC12 : <<include>>
+UC11 .> UC13 : <<include>>
+UC10 .> UC14 : <<include>>
+UC10 .> UC15 : <<include>>
+
+@enduml

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Result</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<main class="result-shell">
+    <section class="result-card">
+        <p class="eyebrow">Submission Complete</p>
+        <h1 th:text="${result.quizTitle}"></h1>
+        <p class="result-score" th:text="|${result.score} / ${result.totalQuestions}|"></p>
+        <p>Your score has been saved to your history immediately.</p>
+        <a th:href="@{/student/home}" class="primary-btn">Back To Dashboard</a>
+    </section>
+</main>
+</body>
+</html>

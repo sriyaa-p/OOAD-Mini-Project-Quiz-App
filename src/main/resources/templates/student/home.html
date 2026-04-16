@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <p class="eyebrow">Student Dashboard</p>
+        <h1 th:text="|Welcome, ${sessionUser.name}|"></h1>
+    </div>
+    <a th:href="@{/logout}" class="ghost-btn">Logout</a>
+</header>
+
+<main class="page-grid">
+    <section>
+        <div th:if="${successMessage}" class="alert success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert error" th:text="${errorMessage}"></div>
+
+        <div class="section-head">
+            <h2>Your Quizzes</h2>
+            <p>Only quizzes assigned to your section and course are visible here.</p>
+        </div>
+
+        <div class="quiz-grid">
+            <article class="quiz-card" th:each="quiz : ${quizzes}">
+                <div class="quiz-card-head">
+                    <h3 th:text="${quiz.title}"></h3>
+                    <span class="badge"
+                          th:classappend="| ${#strings.toLowerCase(quiz.status.name())}|"
+                          th:text="${quiz.status}"></span>
+                </div>
+                <p><strong>Section:</strong> <span th:text="${quiz.sectionName}"></span></p>
+                <p><strong>Course:</strong> <span th:text="${quiz.courseName}"></span></p>
+                <p><strong>Start:</strong> <span th:text="${#temporals.format(quiz.availableFrom, 'dd MMM yyyy HH:mm')}"></span></p>
+                <p><strong>Deadline:</strong> <span th:text="${#temporals.format(quiz.deadline, 'dd MMM yyyy HH:mm')}"></span></p>
+                <p th:if="${quiz.score != null}"><strong>Score:</strong> <span th:text="${quiz.score}"></span></p>
+
+                <a th:if="${quiz.status.name() == 'AVAILABLE'}"
+                   th:href="@{|/student/quiz/${quiz.quizId}|}"
+                   class="primary-btn full-width">Attempt Quiz</a>
+
+                <button th:if="${quiz.status.name() != 'AVAILABLE'}"
+                        type="button"
+                        class="muted-btn full-width"
+                        disabled
+                        th:text="${quiz.status.name() == 'ATTEMPTED' ? 'Already Attempted' : quiz.status.name() == 'MISSED' ? 'Quiz Missed' : 'Not Open Yet'}">
+                </button>
+            </article>
+        </div>
+    </section>
+
+    <aside class="history-panel">
+        <div class="section-head">
+            <h2>Attempt History</h2>
+            <p>Your previous quiz scores appear here immediately after submission.</p>
+        </div>
+
+        <div class="history-card" th:if="${#lists.isEmpty(history)}">
+            <p>No quizzes attempted yet.</p>
+        </div>
+
+        <div class="history-list" th:if="${!#lists.isEmpty(history)}">
+            <article class="history-card" th:each="item : ${history}">
+                <h3 th:text="${item.quizTitle}"></h3>
+                <p th:text="|Score: ${item.score} / ${item.totalQuestions}|"></p>
+                <p th:text="${#temporals.format(item.submittedAt, 'dd MMM yyyy HH:mm')}"></p>
+            </article>
+        </div>
+    </aside>
+</main>
+</body>
+</html>

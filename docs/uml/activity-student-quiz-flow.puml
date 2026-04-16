@@ -1,0 +1,39 @@
+@startuml
+title Student Quiz Attempt - Activity Diagram
+
+start
+:Open login page;
+:Select role = STUDENT;
+:Enter email and password;
+
+if (Credentials valid?) then (yes)
+  :Create session;
+  :Open student dashboard;
+  :Load quizzes for student's section and course;
+  :Resolve each quiz status;
+
+  if (Quiz selected?) then (yes)
+    if (Status = AVAILABLE?) then (yes)
+      :Open quiz attempt page;
+      :Display questions and 4 options;
+      :Student selects answers;
+      :Submit quiz;
+      :Score answers using strategy;
+      :Create QuizAttempt;
+      :Create AttemptAnswer entries;
+      :Save attempt and score;
+      :Show immediate result;
+      :Update attempt history;
+    else (no)
+      :Show Pending / Attempted / Missed;
+      :Block quiz attempt;
+    endif
+  else (no)
+    :Stay on dashboard;
+  endif
+else (no)
+  :Show login error;
+endif
+
+stop
+@enduml
